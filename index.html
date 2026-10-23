@@ -1,336 +1,430 @@
 
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#111318">
-  <title>Virtual Phone AU</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background: #090b10;
-      color: #f7f7fb;
-      font-family: Arial, sans-serif;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-    }
-    .phone {
-      width: min(100%, 390px);
-      height: min(820px, 96vh);
-      min-height: 600px;
-      border: 7px solid #34363d;
-      border-radius: 38px;
-      overflow: hidden;
-      background: linear-gradient(160deg, #30394d, #151821 65%, #101116);
-      position: relative;
-    }
-    .status {
-      display: flex;
-      justify-content: space-between;
-      padding: 12px 22px;
-      font-size: 12px;
-    }
-    header { padding: 20px 22px; }
-    .clock { font-size: 54px; font-weight: 300; }
-    .date { color: #c7c9d3; margin-top: 5px; }
-    .search {
-      margin: 8px 18px 28px;
-      background: #f0f1f6;
-      color: #343641;
-      padding: 13px 16px;
-      border-radius: 24px;
-    }
-    .apps {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 25px 8px;
-      padding: 0 12px;
-    }
-    .app {
-      color: white;
-      background: none;
-      border: 0;
-      font-size: 12px;
-      display: grid;
-      justify-items: center;
-      gap: 8px;
-      cursor: pointer;
-    }
-    .icon {
-      width: 54px;
-      height: 54px;
-      display: grid;
-      place-items: center;
-      border-radius: 17px;
-      font-size: 25px;
-      background: linear-gradient(145deg, #8a9fe7, #4e5c91);
-    }
-    .app:nth-child(2) .icon { background: linear-gradient(145deg,#f5c3d1,#a56a91); }
-    .app:nth-child(3) .icon { background: linear-gradient(145deg,#ffe5a0,#bd9342); }
-    .app:nth-child(4) .icon { background: linear-gradient(145deg,#c8a6f3,#7658b5); }
-    .app:nth-child(5) .icon { background: linear-gradient(145deg,#81d9bb,#328e85); }
-    .app:nth-child(6) .icon { background: linear-gradient(145deg,#8ecbff,#4578bd); }
-    .app:nth-child(7) .icon { background: linear-gradient(145deg,#e9b5a2,#a86d63); }
-    .app:nth-child(8) .icon { background: linear-gradient(145deg,#c4c8d2,#686e7b); }
-    .dock {
-      position: absolute;
-      bottom: 28px;
-      left: 14px;
-      right: 14px;
-      border-radius: 24px;
-      background: #ffffff20;
-      padding: 12px 4px;
-      display: flex;
-      justify-content: space-around;
-    }
-    .page {
-      display: none;
-      position: absolute;
-      inset: 0;
-      background: #111318;
-      padding: 22px 18px 35px;
-      overflow: auto;
-    }
-    .page.active { display: block; }
-    .back {
-      border: 0;
-      color: white;
-      background: none;
-      font-size: 28px;
-      cursor: pointer;
-    }
-    h2 { display: inline-block; margin-left: 10px; }
-    .panel {
-      background: #22252d;
-      padding: 15px;
-      border-radius: 16px;
-      margin: 12px 0;
-    }
-    .muted { color: #aeb2c0; font-size: 13px; }
-    input, textarea {
-      width: 100%;
-      border: 1px solid #454956;
-      background: #22252d;
-      color: white;
-      padding: 12px;
-      border-radius: 12px;
-      font: inherit;
-      margin-top: 8px;
-    }
-    textarea { min-height: 220px; resize: vertical; }
-    .send {
-      background: #b9c8ff;
-      color: #171a24;
-      border: 0;
-      padding: 11px 16px;
-      border-radius: 20px;
-      margin-top: 8px;
-      cursor: pointer;
-    }
-    .bubble {
-      background: #292d38;
-      border-radius: 15px;
-      padding: 11px;
-      margin: 10px 0;
-      max-width: 85%;
-      overflow-wrap: anywhere;
-    }
-    .mine { background: #b9c8ff; color: #171a24; margin-left: auto; }
-    .photo-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; }
-    .photo {
-      aspect-ratio: 1;
-      border-radius: 12px;
-      background: linear-gradient(145deg,#8a9ac0,#36384b);
-      display: grid;
-      place-items: center;
-      font-size: 28px;
-    }
-    .navbar {
-      position: absolute;
-      bottom: 8px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100px;
-      height: 4px;
-      background: white;
-      border-radius: 5px;
-      z-index: 10;
-      cursor: pointer;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Raka's iPhone</title>
+<style>
+:root {
+  --wallpaper: linear-gradient(145deg,#202b48,#8476a9,#d5a9bd);
+  --accent: #007aff;
+  --text: #111;
+  --muted: #8e8e93;
+  --panel: #f2f2f7;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; min-height:100vh; display:flex; align-items:center;
+  justify-content:center; background:#171719;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--text);
+}
+button,input,textarea { font:inherit; }
+button { cursor:pointer; }
+.phone {
+  width:min(100vw,390px); height:min(844px,100dvh);
+  min-height:540px; position:relative; overflow:hidden;
+  background:var(--wallpaper); color:white;
+}
+@media(min-width:500px) {
+  body { padding:22px; }
+  .phone {
+    height:min(844px,94dvh); border:7px solid #28282c;
+    border-radius:48px; box-shadow:0 20px 70px #0009;
+  }
+}
+.status {
+  height:39px; padding:12px 27px 0; display:flex;
+  justify-content:space-between; align-items:center;
+  font-size:12px; font-weight:700; position:relative; z-index:10;
+}
+.status-right { display:flex; align-items:center; gap:5px; }
+.island {
+  position:absolute; top:8px; left:50%; transform:translateX(-50%);
+  width:105px; height:29px; background:#000; border-radius:20px;
+}
+.screen { position:absolute; inset:39px 0 0; display:none; }
+.screen.active { display:block; }
+#lock {
+  inset:0; padding-top:75px; text-align:center;
+  background:var(--wallpaper);
+}
+.lock-date { font-size:16px; font-weight:500; }
+.lock-clock { font-size:78px; line-height:1.1; font-weight:300; letter-spacing:-4px; }
+.lock-notice {
+  margin:30px 17px 0; padding:14px; border-radius:17px;
+  background:#ffffff36; backdrop-filter:blur(25px);
+  text-align:left; color:white;
+}
+.lock-bottom {
+  position:absolute; bottom:32px; left:0; right:0;
+  display:flex; justify-content:space-around; align-items:center;
+}
+.round-btn {
+  width:45px; height:45px; border-radius:50%; border:0;
+  background:#ffffff35; color:white; font-size:20px;
+}
+.lock-hint { position:absolute; bottom:12px; left:0; right:0; font-size:11px; }
+.home {
+  inset:0; padding:8px 17px 27px;
+  background:var(--wallpaper);
+}
+.widget {
+  margin-top:28px; padding:15px; height:120px; border-radius:23px;
+  background:#ffffff25; backdrop-filter:blur(16px);
+}
+.widget small { opacity:.85; }
+.widget strong { display:block; font-size:31px; margin-top:8px; }
+.app-grid {
+  margin-top:24px; display:grid;
+  grid-template-columns:repeat(4,1fr); gap:22px 9px;
+}
+.app-icon {
+  border:0; background:transparent; color:white;
+  text-align:center; min-width:0; padding:0;
+}
+.app-icon .emoji {
+  display:flex; align-items:center; justify-content:center;
+  margin:0 auto 5px; width:55px; height:55px;
+  border-radius:14px; font-size:29px;
+  background:#ffffff30; box-shadow:0 4px 9px #0002;
+}
+.app-icon small {
+  display:block; font-size:11px; text-shadow:0 1px 3px #0008;
+}
+.dock {
+  position:absolute; bottom:26px; left:13px; right:13px;
+  height:83px; border-radius:26px; background:#ffffff38;
+  backdrop-filter:blur(24px); display:flex;
+  align-items:center; justify-content:space-evenly;
+}
+.dock .emoji { width:53px; height:53px; border-radius:14px; }
+.app-screen { background:var(--panel); color:var(--text); }
+.app-header {
+  min-height:53px; padding:9px 15px; display:flex;
+  align-items:center; justify-content:space-between; gap:10px;
+  background:#f8f8fa; border-bottom:1px solid #dedee3;
+}
+.app-header h2 { font-size:18px; margin:0; }
+.back { border:0; background:transparent; color:var(--accent); font-size:15px; }
+.app-body { height:calc(100% - 95px); overflow:auto; padding:14px; }
+.list-item {
+  width:100%; display:flex; gap:12px; align-items:center;
+  padding:12px 2px; border:0; border-bottom:1px solid #dddde2;
+  background:transparent; text-align:left; color:inherit;
+}
+.avatar {
+  width:48px; height:48px; flex-shrink:0; display:grid;
+  place-items:center; border-radius:50%; font-size:23px;
+  background:linear-gradient(145deg,#e5d4f4,#b7c9e9);
+}
+.item-copy { flex:1; min-width:0; }
+.item-copy strong { display:block; font-size:15px; }
+.item-copy small { color:var(--muted); display:block; margin-top:4px; }
+.chat-view { position:absolute; inset:0; display:none; background:#efe9e2; color:#111; }
+.chat-view.active { display:flex; flex-direction:column; }
+.chat-top {
+  min-height:64px; padding:7px 12px; display:flex;
+  align-items:center; gap:8px; background:#f8f8fa;
+  border-bottom:1px solid #ddd;
+}
+.chat-top .avatar { width:38px; height:38px; font-size:19px; }
+.chat-top button { border:0; background:none; color:var(--accent); }
+.chat-messages {
+  flex:1; overflow-y:auto; padding:16px 11px;
+  display:flex; flex-direction:column; gap:8px;
+  background-color:#efe9e2;
+  background-image:radial-gradient(#ffffff90 0.7px,transparent .7px);
+  background-size:18px 18px;
+}
+.day-label {
+  align-self:center; padding:5px 10px; border-radius:8px;
+  background:#ffffffc9; font-size:11px; color:#555;
+}
+.bubble {
+  max-width:83%; padding:9px 10px 5px; border-radius:14px;
+  font-size:14px; line-height:1.4; box-shadow:0 1px 1px #0001;
+  overflow-wrap:anywhere;
+}
+.bubble small { display:block; text-align:right; font-size:10px; color:#777; margin-top:3px; }
+.bubble.them { align-self:flex-start; background:white; border-top-left-radius:4px; }
+.bubble.me { align-self:flex-end; background:#d9fdd3; border-top-right-radius:4px; }
+.chat-compose {
+  display:flex; align-items:flex-end; gap:8px; padding:10px;
+  background:#f7f7f7; border-top:1px solid #ddd;
+}
+.chat-compose textarea {
+  flex:1; min-width:0; resize:none; max-height:90px;
+  border:1px solid #ddd; border-radius:20px;
+  padding:10px 13px; outline:none; background:white;
+}
+.send {
+  width:36px; height:36px; flex-shrink:0; border:0;
+  border-radius:50%; background:#128c7e; color:white;
+}
+.tabbar {
+  position:absolute; bottom:0; left:0; right:0; height:56px;
+  background:#f8f8fa; border-top:1px solid #ddd;
+  display:flex; justify-content:space-around; align-items:center;
+}
+.tabbar button { border:0; background:none; font-size:21px; }
+.note {
+  width:100%; min-height:180px; border:0; outline:none;
+  resize:vertical; background:transparent; font-size:16px;
+}
+.photo-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:3px; }
+.photo {
+  aspect-ratio:1; display:grid; place-items:center; font-size:34px;
+  background:linear-gradient(140deg,#b8c9e5,#e6bed0,#c6d8c4);
+}
+.setting-row {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:16px 12px; margin-bottom:1px; border-radius:9px;
+  background:white; font-size:15px;
+}
+.wallpapers { display:flex; gap:10px; flex-wrap:wrap; margin-top:15px; }
+.wallpaper-choice {
+  width:55px; height:65px; border:2px solid white; border-radius:12px;
+}
+.wallpaper-choice:focus { outline:2px solid var(--accent); }
+.bottom-indicator {
+  position:absolute; bottom:7px; left:50%; transform:translateX(-50%);
+  width:108px; height:4px; border-radius:9px; background:white; z-index:50;
+}
+.app-screen .bottom-indicator { background:#111; }
+.toast {
+  position:absolute; z-index:80; top:50px; left:15px; right:15px;
+  padding:13px; border-radius:15px; color:white;
+  background:#333e; display:none; backdrop-filter:blur(18px);
+}
+.toast.show { display:block; }
+</style>
 </head>
 <body>
-  <main class="phone">
-    <div class="status">
-      <span id="statusTime">09:41</span>
-      <span>● ▮▮ ▰</span>
+<div class="phone" id="phone">
+  <div class="status">
+    <span id="statusTime">9:41</span>
+    <div class="island"></div>
+    <div class="status-right"><span>▮▮▮</span><span>Wi-Fi</span><span>▰</span></div>
+  </div>
+
+  <div id="lock" class="screen active">
+    <div class="lock-date" id="lockDate">Friday, October 23</div>
+    <div class="lock-clock" id="lockClock">9:41</div>
+    <div class="lock-notice" id="lockNotice">
+      <strong>Messages</strong><br>
+      <span>Welcome to Raka's iPhone.</span>
+      <small style="display:block;margin-top:6px;opacity:.8">now</small>
     </div>
+    <div class="lock-bottom">
+      <button class="round-btn" onclick="toast('Flashlight demo')">◉</button>
+      <button class="round-btn" onclick="unlock()">⌂</button>
+      <button class="round-btn" onclick="openApp('camera')">◎</button>
+    </div>
+    <div class="lock-hint">Tap the screen to unlock</div>
+  </div>
 
-    <section id="home">
-      <header>
-        <div class="clock" id="clock">09:41</div>
-        <div class="date" id="date">Virtual Phone</div>
-      </header>
-      <div class="search">⌕ &nbsp; Search apps</div>
-      <div class="apps">
-        <button class="app" onclick="openApp('messages')"><span class="icon">▤</span>Messages</button>
-        <button class="app" onclick="openApp('gallery')"><span class="icon">✿</span>Gallery</button>
-        <button class="app" onclick="openApp('notes')"><span class="icon">▧</span>Notes</button>
-        <button class="app" onclick="openApp('music')"><span class="icon">♫</span>Music</button>
-        <button class="app" onclick="openApp('social')"><span class="icon">◎</span>Social</button>
-        <button class="app" onclick="openApp('phoneapp')"><span class="icon">☎</span>Phone</button>
-        <button class="app" onclick="openApp('files')"><span class="icon">▣</span>Files</button>
-        <button class="app" onclick="openApp('settings')"><span class="icon">⚙</span>Settings</button>
-      </div>
-      <div class="dock">
-        <button class="app" onclick="openApp('phoneapp')"><span class="icon">☎</span></button>
-        <button class="app" onclick="openApp('messages')"><span class="icon">▤</span></button>
-        <button class="app" onclick="openApp('gallery')"><span class="icon">✿</span></button>
-        <button class="app" onclick="openApp('music')"><span class="icon">♫</span></button>
-      </div>
-    </section>
+  <div id="home" class="screen home">
+    <div style="text-align:center;font-size:12px;margin-top:8px">Raka's iPhone</div>
+    <div class="widget">
+      <small id="homeDate">FRIDAY, OCTOBER 23</small>
+      <strong id="homeClock">9:41</strong>
+      <small>Have a nice day.</small>
+    </div>
+    <div class="app-grid">
+      <button class="app-icon" onclick="openApp('messages')"><span class="emoji" style="background:#32c85b">💬</span><small>WhatsApp</small></button>
+      <button class="app-icon" onclick="openApp('photos')"><span class="emoji" style="background:#fff">🌈</span><small>Photos</small></button>
+      <button class="app-icon" onclick="openApp('notes')"><span class="emoji" style="background:#ffe56b">📝</span><small>Notes</small></button>
+      <button class="app-icon" onclick="openApp('music')"><span class="emoji" style="background:#fa4268">🎵</span><small>Music</small></button>
+      <button class="app-icon" onclick="openApp('settings')"><span class="emoji" style="background:#aeb5c0">⚙️</span><small>Settings</small></button>
+      <button class="app-icon" onclick="openApp('phone')"><span class="emoji" style="background:#36c96a">📞</span><small>Phone</small></button>
+      <button class="app-icon" onclick="openApp('camera')"><span class="emoji" style="background:#ddd">📷</span><small>Camera</small></button>
+      <button class="app-icon" onclick="openApp('files')"><span class="emoji" style="background:#fff">📁</span><small>Files</small></button>
+      <button class="app-icon" onclick="openApp('social')"><span class="emoji" style="background:#fa8c44">📸</span><small>Social</small></button>
+      <button class="app-icon" onclick="openApp('calendar')"><span class="emoji" style="background:#fff;color:#ed4545">📅</span><small>Calendar</small></button>
+      <button class="app-icon" onclick="openApp('clock')"><span class="emoji" style="background:#ddd">⏰</span><small>Clock</small></button>
+      <button class="app-icon" onclick="openApp('weather')"><span class="emoji" style="background:#82c9ff">🌤️</span><small>Weather</small></button>
+    </div>
+    <div class="dock">
+      <button class="app-icon" onclick="openApp('phone')"><span class="emoji" style="background:#32c85b">📞</span></button>
+      <button class="app-icon" onclick="openApp('messages')"><span class="emoji" style="background:#32c85b">💬</span></button>
+      <button class="app-icon" onclick="openApp('social')"><span class="emoji" style="background:#f4f4f4">📸</span></button>
+      <button class="app-icon" onclick="openApp('music')"><span class="emoji" style="background:#fa4268">🎵</span></button>
+    </div>
+  </div>
 
-    <section class="page" id="messages">
-      <button class="back" onclick="goHome()">‹</button><h2>Messages</h2>
-      <p class="muted">Chat fiktif untuk AU kamu.</p>
-      <div id="chat">
-        <div class="bubble">Riku: hey, kamu masih bangun?</div>
-      </div>
-      <input id="messageInput" placeholder="Ketik pesan..." />
-      <button class="send" onclick="sendMessage()">Kirim</button>
-    </section>
+  <div id="app" class="screen app-screen">
+    <div id="appContent"></div>
+    <div class="bottom-indicator" onclick="goHome()"></div>
+  </div>
+  <div class="bottom-indicator" id="homeIndicator" onclick="goHome()"></div>
+  <div class="toast" id="toast"></div>
+</div>
 
-    <section class="page" id="gallery">
-      <button class="back" onclick="goHome()">‹</button><h2>Gallery</h2>
-      <p class="muted">Kenangan tersimpan</p>
-      <div class="photo-grid">
-        <div class="photo">🌃</div><div class="photo">🌙</div>
-        <div class="photo">🌧</div><div class="photo">☕</div>
-        <div class="photo">🪞</div><div class="photo">🖤</div>
-      </div>
-    </section>
+<script>
+const $ = id => document.getElementById(id);
+const contacts = [
+  {id:'dina',name:'Dina',emoji:'🌷',preview:'Jangan lupa nanti yaa',messages:[
+    {from:'them',text:'Rakaaa, lu di mana?',time:'09:35'},
+    {from:'me',text:'Di rumah. Kenapa?',time:'09:36'},
+    {from:'them',text:'Jangan lupa nanti yaa',time:'09:37'}]},
+  {id:'aryo',name:'Aryo',emoji:'🧢',preview:'wkwkwk anjir',messages:[
+    {from:'them',text:'Lu udah ngerjain tugas?',time:'08:15'},
+    {from:'me',text:'Belom, santai dulu',time:'08:17'},
+    {from:'them',text:'wkwkwk anjir',time:'08:18'}]},
+  {id:'mama',name:'Mama',emoji:'🌻',preview:'Pulang jam berapa?',messages:[
+    {from:'them',text:'Raka, pulang jam berapa?',time:'07:40'},
+    {from:'me',text:'Nanti sore, Ma',time:'07:42'}]},
+  {id:'unknown',name:'Unknown',emoji:'🌑',preview:'Kita perlu bicara.',messages:[
+    {from:'them',text:'Kita perlu bicara.',time:'23:06'}]}
+];
+let currentContact = null;
+let activeScreen = 'lock';
+let notesTimer;
+const timeNow = () => new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',hour12:false});
+function updateClock() {
+  const d = new Date();
+  const t = d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',hour12:false});
+  $('statusTime').textContent=t;
+  $('lockClock').textContent=t;
+  $('homeClock').textContent=t;
+  $('lockDate').textContent=d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  $('homeDate').textContent=d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}).toUpperCase();
+}
+updateClock();
+setInterval(updateClock,15000);
 
-    <section class="page" id="notes">
-      <button class="back" onclick="goHome()">‹</button><h2>Notes</h2>
-      <textarea id="note" placeholder="Tulis catatan AU di sini..."></textarea>
-      <button class="send" onclick="saveNote()">Simpan catatan</button>
-      <p class="muted" id="noteStatus">Catatan tersimpan di browser ini.</p>
-    </section>
+function toast(message) {
+  const el=$('toast'); el.textContent=message; el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),2000);
+}
+function unlock() {
+  $('lock').classList.remove('active');
+  $('home').classList.add('active');
+  $('homeIndicator').style.display='block';
+  activeScreen='home';
+}
+$('lock').addEventListener('click', e=>{
+  if(e.target.closest('button')) return;
+  unlock();
+});
+function goHome() {
+  $('app').classList.remove('active');
+  $('home').classList.add('active');
+  $('homeIndicator').style.display='block';
+  activeScreen='home';
+}
+function openApp(name) {
+  $('lock').classList.remove('active');
+  $('home').classList.remove('active');
+  $('homeIndicator').style.display='none';
+  $('app').classList.add('active');
+  activeScreen=name;
+  if(name==='messages') renderChats();
+  else if(name==='notes') renderNotes();
+  else if(name==='photos') renderPhotos();
+  else if(name==='settings') renderSettings();
+  else if(name==='music') renderMusic();
+  else if(name==='phone') renderPhone();
+  else if(name==='camera') renderCamera();
+  else if(name==='files') renderFiles();
+  else if(name==='social') renderSocial();
+  else if(name==='calendar') renderCalendar();
+  else if(name==='clock') renderClock();
+  else if(name==='weather') renderWeather();
+}
+function shell(title,body,right='') {
+  $('appContent').innerHTML=`<div class="app-header"><button class="back" onclick="goHome()">‹ Home</button><h2>${title}</h2><span>${right}</span></div><div class="app-body">${body}</div>`;
+}
+function renderChats() {
+  const rows=contacts.map(c=>`<button class="list-item" onclick="openChat('${c.id}')"><span class="avatar">${c.emoji}</span><span class="item-copy"><strong>${c.name}</strong><small>${escapeHTML(c.preview)}</small></span><small>${c.messages.at(-1)?.time||''}</small></button>`).join('');
+  shell('Chats',`<input id="contactSearch" placeholder="Search" style="width:100%;padding:10px;border:0;border-radius:10px;background:#e5e5ea" oninput="filterChats(this.value)"><div id="contactRows">${rows}</div><button onclick="addContact()" style="margin-top:15px;border:0;background:var(--accent);color:white;border-radius:10px;padding:10px 14px">＋ New chat</button>`,'Edit');
+}
+function filterChats(value) {
+  $('contactRows').innerHTML=contacts.filter(c=>c.name.toLowerCase().includes(value.toLowerCase())).map(c=>`<button class="list-item" onclick="openChat('${c.id}')"><span class="avatar">${c.emoji}</span><span class="item-copy"><strong>${c.name}</strong><small>${escapeHTML(c.preview)}</small></span></button>`).join('');
+}
+function openChat(id) {
+  currentContact=contacts.find(c=>c.id===id);
+  if(!currentContact) return;
+  const rows=currentContact.messages.map(m=>`<div class="bubble ${m.from==='me'?'me':'them'}">${escapeHTML(m.text)}<small>${m.time}${m.from==='me'?' ✓✓':''}</small></div>`).join('');
+  $('appContent').innerHTML=`<div class="chat-view active"><div class="chat-top"><button onclick="renderChats()">‹</button><span class="avatar">${currentContact.emoji}</span><div style="flex:1"><strong>${currentContact.name}</strong><div style="font-size:11px;color:#888">last seen recently</div></div><button onclick="toast('Call demo')">☎</button><button onclick="toast('Video call demo')">▣</button></div><div class="chat-messages" id="chatMessages"><div class="day-label">TODAY</div>${rows}</div><form class="chat-compose" onsubmit="sendMessage(event)"><button type="button" onclick="toast('Attachment demo')">＋</button><textarea id="messageInput" rows="1" placeholder="Message" required></textarea><button class="send" type="submit">↑</button></form></div>`;
+  const box=$('chatMessages'); box.scrollTop=box.scrollHeight;
+}
+function sendMessage(e) {
+  e.preventDefault();
+  const input=$('messageInput'), text=input.value.trim();
+  if(!text||!currentContact)return;
+  const c=currentContact, time=timeNow();
+  c.messages.push({from:'me',text,time}); c.preview=text;
+  openChat(c.id);
+  $('chatMessages').scrollTop=$('chatMessages').scrollHeight;
+  $('lockNotice').innerHTML=`<strong>${c.name}</strong><br>${escapeHTML(text)}<small style="display:block;margin-top:6px;opacity:.8">now</small>`;
+}
+function addContact() {
+  const name=prompt('Nama kontak baru?');
+  if(!name||!name.trim())return;
+  const c={id:'c'+Date.now(),name:name.trim(),emoji:'👤',preview:'New chat',messages:[]};
+  contacts.push(c); renderChats(); openChat(c.id);
+}
+function escapeHTML(s) {
+  return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function renderNotes() {
+  const saved=localStorage.getItem('rakaNotes')||'';
+  shell('Notes',`<div style="color:#b49a00;font-size:12px;margin-bottom:12px">ON MY IPHONE</div><textarea id="noteText" class="note" placeholder="Start typing..." oninput="saveNotes()">${escapeHTML(saved)}</textarea><small id="noteStatus" style="color:#888">Saved on this device</small>`);
+}
+function saveNotes() {
+  clearTimeout(notesTimer);
+  $('noteStatus').textContent='Saving...';
+  notesTimer=setTimeout(()=>{localStorage.setItem('rakaNotes',$('noteText').value);$('noteStatus').textContent='Saved on this device';},300);
+}
+function renderPhotos() {
+  shell('Photos',`<div style="font-size:24px;font-weight:700;margin-bottom:15px">Library</div><p style="color:#888">Your memories, your way.</p><div class="photo-grid">${['🌅','🌃','🌷','🌊','🌙','☁️','🏙️','🌸','🌄'].map((x,i)=>`<button class="photo" onclick="toast('Photo ${i+1}: demo image')">${x}</button>`).join('')}</div><p style="font-size:12px;color:#888">Demo gallery — replace these placeholders with your own photos later.</p>`);
+}
+function renderSettings() {
+  shell('Settings',`<div style="display:flex;gap:12px;align-items:center;padding:10px 0 20px"><div class="avatar">👤</div><div><strong>Raka</strong><div style="color:#888;font-size:12px">Apple Account · Local demo</div></div></div><div class="setting-row">✈️ Airplane Mode <input type="checkbox" onchange="toast('Setting updated')"></div><div class="setting-row">📶 Wi-Fi <span>Connected</span></div><div class="setting-row">🔵 Bluetooth <span>On</span></div><div class="setting-row">🔋 Battery <span>100%</span></div><h3>Wallpaper</h3><p style="color:#777;font-size:13px">Choose a background for the lock and home screens.</p><div class="wallpapers"><button class="wallpaper-choice" style="background:linear-gradient(145deg,#202b48,#8476a9,#d5a9bd)" onclick="setWallpaper(0)"></button><button class="wallpaper-choice" style="background:linear-gradient(145deg,#102d42,#277f91,#c4e8d7)" onclick="setWallpaper(1)"></button><button class="wallpaper-choice" style="background:linear-gradient(145deg,#42214b,#c45b82,#f2c5a8)" onclick="setWallpaper(2)"></button><button class="wallpaper-choice" style="background:linear-gradient(145deg,#080808,#484848,#b7b7b7)" onclick="setWallpaper(3)"></button></div>`);
+}
+function setWallpaper(n) {
+  const w=[
+    'linear-gradient(145deg,#202b48,#8476a9,#d5a9bd)',
+    'linear-gradient(145deg,#102d42,#277f91,#c4e8d7)',
+    'linear-gradient(145deg,#42214b,#c45b82,#f2c5a8)',
+    'linear-gradient(145deg,#080808,#484848,#b7b7b7)'
+  ];
+  document.documentElement.style.setProperty('--wallpaper',w[n]);
+  localStorage.setItem('rakaWallpaper',n);
+  toast('Wallpaper updated');
+}
+const oldWallpaper=localStorage.getItem('rakaWallpaper');
+if(oldWallpaper!==null)setWallpaper(Number(oldWallpaper));
 
-    <section class="page" id="music">
-      <button class="back" onclick="goHome()">‹</button><h2>Music</h2>
-      <div class="panel" style="text-align:center;padding:30px 16px">
-        <div style="font-size:80px">♫</div>
-        <h3>Midnight Fiction</h3>
-        <p class="muted">AU Soundtrack</p>
-        <button class="send" onclick="alert('Ini pemutar demo. Audio belum disambungkan.')">▶ Play</button>
-      </div>
-    </section>
-
-    <section class="page" id="social">
-      <button class="back" onclick="goHome()">‹</button><h2>Social</h2>
-      <div class="panel"><b>riku.jpg</b><p>some nights feel like a memory that hasn't happened yet.</p><span class="muted">♡ 248　◯ 19</span></div>
-      <div class="panel"><b>afterhours.archive</b><p>no context. just keep this between us.</p><span class="muted">♡ 86　◯ 7</span></div>
-    </section>
-
-    <section class="page" id="phoneapp">
-      <button class="back" onclick="goHome()">‹</button><h2>Phone</h2>
-      <div class="panel"><b>Recent calls</b><p>Riku <span class="muted">· Yesterday, 21:43</span></p></div>
-      <p class="muted">Simulasi panggilan, bukan panggilan sungguhan.</p>
-      <button class="send" onclick="alert('Call demo saja, tidak menghubungi nomor asli.')">☎ Call</button>
-    </section>
-
-    <section class="page" id="files">
-      <button class="back" onclick="goHome()">‹</button><h2>Files</h2>
-      <div class="panel">📁 &nbsp; AU Documents</div>
-      <div class="panel">🖼 &nbsp; Saved Images</div>
-      <div class="panel">♫ &nbsp; Soundtrack</div>
-    </section>
-
-    <section class="page" id="settings">
-      <button class="back" onclick="goHome()">‹</button><h2>Settings</h2>
-      <div class="panel"><b>Raka's Phone</b><p class="muted">Android-style virtual device</p></div>
-      <div class="panel">Wi-Fi <span style="float:right">Connected ●</span></div>
-      <div class="panel">Bluetooth <span style="float:right">On</span></div>
-      <button class="send" onclick="changeWallpaper()">Change wallpaper</button>
-    </section>
-
-    <div class="navbar" onclick="goHome()"></div>
-  </main>
-
-  <script>
-    const $ = id => document.getElementById(id);
-
-    function updateTime() {
-      const now = new Date();
-      const time = now.toLocaleTimeString('id-ID', {
-        hour: '2-digit', minute: '2-digit', hour12: false
-      });
-      $('clock').textContent = time;
-      $('statusTime').textContent = time;
-      $('date').textContent = now.toLocaleDateString('id-ID', {
-        weekday: 'long', day: 'numeric', month: 'long'
-      });
-    }
-    updateTime();
-    setInterval(updateTime, 30000);
-
-    function openApp(id) {
-      document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-      $('home').style.display = 'none';
-      $(id).classList.add('active');
-      if (id === 'notes') $('note').value = localStorage.getItem('au-note') || '';
-    }
-
-    function goHome() {
-      document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-      $('home').style.display = 'block';
-    }
-
-    function sendMessage() {
-      const input = $('messageInput');
-      const text = input.value.trim();
-      if (!text) return;
-
-      const mine = document.createElement('div');
-      mine.className = 'bubble mine';
-      mine.textContent = 'Kamu: ' + text;
-      $('chat').appendChild(mine);
-      input.value = '';
-
-      setTimeout(() => {
-        const reply = document.createElement('div');
-        reply.className = 'bubble';
-        const replies = [
-          'Raka: aku dengerin.',
-          'Raka: serius? ceritain lagi.',
-          'Raka: jangan pulang sendirian, ya.',
-          'Raka: hmm, aku paham.'
-        ];
-        reply.textContent = replies[Math.floor(Math.random() * replies.length)];
-        $('chat').appendChild(reply);
-      }, 500);
-    }
-
-    function saveNote() {
-      localStorage.setItem('au-note', $('note').value);
-      $('noteStatus').textContent = 'Catatan berhasil disimpan ✓';
-    }
-
-    let wallpaper = 0;
-    function changeWallpaper() {
-      const backgrounds = [
-        'linear-gradient(160deg,#30394d,#151821 65%,#101116)',
-        'linear-gradient(160deg,#49344d,#201622 65%,#100e14)',
-        'linear-gradient(160deg,#244a45,#172522 65%,#0d1312)',
-        'linear-gradient(160deg,#4a4140,#211c1c 65%,#100e0e)'
-      ];
-      wallpaper = (wallpaper + 1) % backgrounds.length;
-      document.querySelector('.phone').style.background = backgrounds[wallpaper];
-    }
-  </script>
+function renderMusic() {
+  shell('Music',`<div style="text-align:center;padding-top:35px"><div style="font-size:100px">🎵</div><h2>Now Playing</h2><p style="color:#888">Raka's playlist</p><button onclick="toast('Music player demo — no audio attached')" style="border:0;border-radius:50%;background:#111;color:white;width:55px;height:55px;font-size:22px">▶</button><p style="font-size:12px;color:#888">Demo player</p></div>`);
+}
+function renderPhone() {
+  shell('Phone',`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px">${['1','2','3','4','5','6','7','8','9','*','0','#'].map(n=>`<button onclick="$('dialNumber').value += '${n}'" style="width:30%;height:55px;border:0;border-radius:50%;font-size:23px;background:white">${n}</button>`).join('')}</div><input id="dialNumber" placeholder="Enter number" style="width:100%;padding:12px;border:1px solid #ddd;border-radius:10px"><button onclick="toast('Call simulation only')" style="display:block;margin:16px auto;background:#34c759;color:white;border:0;border-radius:30px;padding:13px 25px">Call</button>`);
+}
+function renderCamera() {
+  shell('Camera',`<div style="background:#222;color:white;min-height:330px;display:grid;place-items:center;border-radius:18px;text-align:center"><div><div style="font-size:55px">📷</div><p>Camera preview</p><small>This is a demo, not your actual camera.</small></div></div><button onclick="toast('Camera demo')" style="display:block;margin:20px auto;padding:15px;border:0;border-radius:50%;background:white;font-size:25px">◉</button>`);
+}
+function renderFiles() {
+  shell('Files',`<h3>Browse</h3>${['Recents','Downloads','On My iPhone','iCloud Drive'].map((x,i)=>`<button class="list-item" onclick="toast('${x} — demo folder')"><span class="avatar">${['🕘','⬇️','📱','☁️'][i]}</span><span class="item-copy"><strong>${x}</strong><small>Browse files</small></span></button>`).join('')}`);
+}
+function renderSocial() {
+  shell('Social',`<div style="display:flex;align-items:center;gap:10px"><div class="avatar">🖤</div><div><strong>raka.jpg</strong><small style="display:block;color:#888">Raka's profile</small></div></div><div style="margin-top:18px;border-radius:12px;min-height:260px;background:linear-gradient(140deg,#29334e,#967da7,#d4b0bd);display:grid;place-items:center;font-size:55px">🌆</div><div style="padding:15px 0"><button onclick="toast('Liked')" style="border:0;background:none;font-size:23px">♡</button>　<button onclick="toast('Comment demo')" style="border:0;background:none;font-size:23px">◯</button><p><strong>raka.jpg</strong> another day, another story.</p><small style="color:#888">Demo social feed · fictional account</small></div>`);
+}
+function renderCalendar() {
+  const d=new Date();
+  shell('Calendar',`<div style="text-align:center;padding:20px"><div style="font-size:14px;color:#ed4545">${d.toLocaleDateString('en-US',{weekday:'long'}).toUpperCase()}</div><div style="font-size:65px">${d.getDate()}</div><h3>${d.toLocaleDateString('en-US',{month:'long',year:'numeric'})}</h3><p style="color:#888">No events today</p><button onclick="toast('Event editor demo')" style="background:var(--accent);color:white;border:0;border-radius:10px;padding:10px 15px">＋ Add Event</button></div>`);
+}
+function renderClock() {
+  shell('Clock',`<div style="text-align:center;padding:45px 0"><div style="font-size:62px;font-weight:200" id="clockBig">${timeNow()}</div><p>Local time</p><button onclick="toast('Alarm demo')" style="background:var(--accent);color:white;border:0;border-radius:10px;padding:10px 16px">＋ Add Alarm</button></div>`);
+}
+function renderWeather() {
+  shell('Weather',`<div style="text-align:center;padding:40px 0"><div style="font-size:65px">🌤️</div><h2>Malang</h2><div style="font-size:50px">--°</div><p>Weather demo</p><small style="color:#888">No live weather data connected.</small></div>`);
+}
+</script>
 </body>
 </html>
