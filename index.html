@@ -1,0 +1,336 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#111318">
+  <title>Virtual Phone AU</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #090b10;
+      color: #f7f7fb;
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+    }
+    .phone {
+      width: min(100%, 390px);
+      height: min(820px, 96vh);
+      min-height: 600px;
+      border: 7px solid #34363d;
+      border-radius: 38px;
+      overflow: hidden;
+      background: linear-gradient(160deg, #30394d, #151821 65%, #101116);
+      position: relative;
+    }
+    .status {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 22px;
+      font-size: 12px;
+    }
+    header { padding: 20px 22px; }
+    .clock { font-size: 54px; font-weight: 300; }
+    .date { color: #c7c9d3; margin-top: 5px; }
+    .search {
+      margin: 8px 18px 28px;
+      background: #f0f1f6;
+      color: #343641;
+      padding: 13px 16px;
+      border-radius: 24px;
+    }
+    .apps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 25px 8px;
+      padding: 0 12px;
+    }
+    .app {
+      color: white;
+      background: none;
+      border: 0;
+      font-size: 12px;
+      display: grid;
+      justify-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+    .icon {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      border-radius: 17px;
+      font-size: 25px;
+      background: linear-gradient(145deg, #8a9fe7, #4e5c91);
+    }
+    .app:nth-child(2) .icon { background: linear-gradient(145deg,#f5c3d1,#a56a91); }
+    .app:nth-child(3) .icon { background: linear-gradient(145deg,#ffe5a0,#bd9342); }
+    .app:nth-child(4) .icon { background: linear-gradient(145deg,#c8a6f3,#7658b5); }
+    .app:nth-child(5) .icon { background: linear-gradient(145deg,#81d9bb,#328e85); }
+    .app:nth-child(6) .icon { background: linear-gradient(145deg,#8ecbff,#4578bd); }
+    .app:nth-child(7) .icon { background: linear-gradient(145deg,#e9b5a2,#a86d63); }
+    .app:nth-child(8) .icon { background: linear-gradient(145deg,#c4c8d2,#686e7b); }
+    .dock {
+      position: absolute;
+      bottom: 28px;
+      left: 14px;
+      right: 14px;
+      border-radius: 24px;
+      background: #ffffff20;
+      padding: 12px 4px;
+      display: flex;
+      justify-content: space-around;
+    }
+    .page {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: #111318;
+      padding: 22px 18px 35px;
+      overflow: auto;
+    }
+    .page.active { display: block; }
+    .back {
+      border: 0;
+      color: white;
+      background: none;
+      font-size: 28px;
+      cursor: pointer;
+    }
+    h2 { display: inline-block; margin-left: 10px; }
+    .panel {
+      background: #22252d;
+      padding: 15px;
+      border-radius: 16px;
+      margin: 12px 0;
+    }
+    .muted { color: #aeb2c0; font-size: 13px; }
+    input, textarea {
+      width: 100%;
+      border: 1px solid #454956;
+      background: #22252d;
+      color: white;
+      padding: 12px;
+      border-radius: 12px;
+      font: inherit;
+      margin-top: 8px;
+    }
+    textarea { min-height: 220px; resize: vertical; }
+    .send {
+      background: #b9c8ff;
+      color: #171a24;
+      border: 0;
+      padding: 11px 16px;
+      border-radius: 20px;
+      margin-top: 8px;
+      cursor: pointer;
+    }
+    .bubble {
+      background: #292d38;
+      border-radius: 15px;
+      padding: 11px;
+      margin: 10px 0;
+      max-width: 85%;
+      overflow-wrap: anywhere;
+    }
+    .mine { background: #b9c8ff; color: #171a24; margin-left: auto; }
+    .photo-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; }
+    .photo {
+      aspect-ratio: 1;
+      border-radius: 12px;
+      background: linear-gradient(145deg,#8a9ac0,#36384b);
+      display: grid;
+      place-items: center;
+      font-size: 28px;
+    }
+    .navbar {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 4px;
+      background: white;
+      border-radius: 5px;
+      z-index: 10;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <main class="phone">
+    <div class="status">
+      <span id="statusTime">09:41</span>
+      <span>● ▮▮ ▰</span>
+    </div>
+
+    <section id="home">
+      <header>
+        <div class="clock" id="clock">09:41</div>
+        <div class="date" id="date">Virtual Phone</div>
+      </header>
+      <div class="search">⌕ &nbsp; Search apps</div>
+      <div class="apps">
+        <button class="app" onclick="openApp('messages')"><span class="icon">▤</span>Messages</button>
+        <button class="app" onclick="openApp('gallery')"><span class="icon">✿</span>Gallery</button>
+        <button class="app" onclick="openApp('notes')"><span class="icon">▧</span>Notes</button>
+        <button class="app" onclick="openApp('music')"><span class="icon">♫</span>Music</button>
+        <button class="app" onclick="openApp('social')"><span class="icon">◎</span>Social</button>
+        <button class="app" onclick="openApp('phoneapp')"><span class="icon">☎</span>Phone</button>
+        <button class="app" onclick="openApp('files')"><span class="icon">▣</span>Files</button>
+        <button class="app" onclick="openApp('settings')"><span class="icon">⚙</span>Settings</button>
+      </div>
+      <div class="dock">
+        <button class="app" onclick="openApp('phoneapp')"><span class="icon">☎</span></button>
+        <button class="app" onclick="openApp('messages')"><span class="icon">▤</span></button>
+        <button class="app" onclick="openApp('gallery')"><span class="icon">✿</span></button>
+        <button class="app" onclick="openApp('music')"><span class="icon">♫</span></button>
+      </div>
+    </section>
+
+    <section class="page" id="messages">
+      <button class="back" onclick="goHome()">‹</button><h2>Messages</h2>
+      <p class="muted">Chat fiktif untuk AU kamu.</p>
+      <div id="chat">
+        <div class="bubble">Riku: hey, kamu masih bangun?</div>
+      </div>
+      <input id="messageInput" placeholder="Ketik pesan..." />
+      <button class="send" onclick="sendMessage()">Kirim</button>
+    </section>
+
+    <section class="page" id="gallery">
+      <button class="back" onclick="goHome()">‹</button><h2>Gallery</h2>
+      <p class="muted">Kenangan tersimpan</p>
+      <div class="photo-grid">
+        <div class="photo">🌃</div><div class="photo">🌙</div>
+        <div class="photo">🌧</div><div class="photo">☕</div>
+        <div class="photo">🪞</div><div class="photo">🖤</div>
+      </div>
+    </section>
+
+    <section class="page" id="notes">
+      <button class="back" onclick="goHome()">‹</button><h2>Notes</h2>
+      <textarea id="note" placeholder="Tulis catatan AU di sini..."></textarea>
+      <button class="send" onclick="saveNote()">Simpan catatan</button>
+      <p class="muted" id="noteStatus">Catatan tersimpan di browser ini.</p>
+    </section>
+
+    <section class="page" id="music">
+      <button class="back" onclick="goHome()">‹</button><h2>Music</h2>
+      <div class="panel" style="text-align:center;padding:30px 16px">
+        <div style="font-size:80px">♫</div>
+        <h3>Midnight Fiction</h3>
+        <p class="muted">AU Soundtrack</p>
+        <button class="send" onclick="alert('Ini pemutar demo. Audio belum disambungkan.')">▶ Play</button>
+      </div>
+    </section>
+
+    <section class="page" id="social">
+      <button class="back" onclick="goHome()">‹</button><h2>Social</h2>
+      <div class="panel"><b>riku.jpg</b><p>some nights feel like a memory that hasn't happened yet.</p><span class="muted">♡ 248　◯ 19</span></div>
+      <div class="panel"><b>afterhours.archive</b><p>no context. just keep this between us.</p><span class="muted">♡ 86　◯ 7</span></div>
+    </section>
+
+    <section class="page" id="phoneapp">
+      <button class="back" onclick="goHome()">‹</button><h2>Phone</h2>
+      <div class="panel"><b>Recent calls</b><p>Riku <span class="muted">· Yesterday, 21:43</span></p></div>
+      <p class="muted">Simulasi panggilan, bukan panggilan sungguhan.</p>
+      <button class="send" onclick="alert('Call demo saja, tidak menghubungi nomor asli.')">☎ Call</button>
+    </section>
+
+    <section class="page" id="files">
+      <button class="back" onclick="goHome()">‹</button><h2>Files</h2>
+      <div class="panel">📁 &nbsp; AU Documents</div>
+      <div class="panel">🖼 &nbsp; Saved Images</div>
+      <div class="panel">♫ &nbsp; Soundtrack</div>
+    </section>
+
+    <section class="page" id="settings">
+      <button class="back" onclick="goHome()">‹</button><h2>Settings</h2>
+      <div class="panel"><b>Raka's Phone</b><p class="muted">Android-style virtual device</p></div>
+      <div class="panel">Wi-Fi <span style="float:right">Connected ●</span></div>
+      <div class="panel">Bluetooth <span style="float:right">On</span></div>
+      <button class="send" onclick="changeWallpaper()">Change wallpaper</button>
+    </section>
+
+    <div class="navbar" onclick="goHome()"></div>
+  </main>
+
+  <script>
+    const $ = id => document.getElementById(id);
+
+    function updateTime() {
+      const now = new Date();
+      const time = now.toLocaleTimeString('id-ID', {
+        hour: '2-digit', minute: '2-digit', hour12: false
+      });
+      $('clock').textContent = time;
+      $('statusTime').textContent = time;
+      $('date').textContent = now.toLocaleDateString('id-ID', {
+        weekday: 'long', day: 'numeric', month: 'long'
+      });
+    }
+    updateTime();
+    setInterval(updateTime, 30000);
+
+    function openApp(id) {
+      document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+      $('home').style.display = 'none';
+      $(id).classList.add('active');
+      if (id === 'notes') $('note').value = localStorage.getItem('au-note') || '';
+    }
+
+    function goHome() {
+      document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+      $('home').style.display = 'block';
+    }
+
+    function sendMessage() {
+      const input = $('messageInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const mine = document.createElement('div');
+      mine.className = 'bubble mine';
+      mine.textContent = 'Kamu: ' + text;
+      $('chat').appendChild(mine);
+      input.value = '';
+
+      setTimeout(() => {
+        const reply = document.createElement('div');
+        reply.className = 'bubble';
+        const replies = [
+          'Raka: aku dengerin.',
+          'Raka: serius? ceritain lagi.',
+          'Raka: jangan pulang sendirian, ya.',
+          'Raka: hmm, aku paham.'
+        ];
+        reply.textContent = replies[Math.floor(Math.random() * replies.length)];
+        $('chat').appendChild(reply);
+      }, 500);
+    }
+
+    function saveNote() {
+      localStorage.setItem('au-note', $('note').value);
+      $('noteStatus').textContent = 'Catatan berhasil disimpan ✓';
+    }
+
+    let wallpaper = 0;
+    function changeWallpaper() {
+      const backgrounds = [
+        'linear-gradient(160deg,#30394d,#151821 65%,#101116)',
+        'linear-gradient(160deg,#49344d,#201622 65%,#100e14)',
+        'linear-gradient(160deg,#244a45,#172522 65%,#0d1312)',
+        'linear-gradient(160deg,#4a4140,#211c1c 65%,#100e0e)'
+      ];
+      wallpaper = (wallpaper + 1) % backgrounds.length;
+      document.querySelector('.phone').style.background = backgrounds[wallpaper];
+    }
+  </script>
+</body>
+</html>
