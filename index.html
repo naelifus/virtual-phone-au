@@ -301,21 +301,112 @@ button { cursor:pointer; }
 
 <script>
 const $ = id => document.getElementById(id);
+
 const contacts = [
-  {id:'dina',name:'Dina',emoji:'🌷',preview:'Jangan lupa nanti yaa',messages:[
-    {from:'them',text:'Rakaaa, lu di mana?',time:'09:35'},
-    {from:'me',text:'Di rumah. Kenapa?',time:'09:36'},
-    {from:'them',text:'Jangan lupa nanti yaa',time:'09:37'}]},
-  {id:'aryo',name:'Aryo',emoji:'🧢',preview:'wkwkwk anjir',messages:[
-    {from:'them',text:'Lu udah ngerjain tugas?',time:'08:15'},
-    {from:'me',text:'Belom, santai dulu',time:'08:17'},
-    {from:'them',text:'wkwkwk anjir',time:'08:18'}]},
-  {id:'mama',name:'Mama',emoji:'🌻',preview:'Pulang jam berapa?',messages:[
-    {from:'them',text:'Raka, pulang jam berapa?',time:'07:40'},
-    {from:'me',text:'Nanti sore, Ma',time:'07:42'}]},
-  {id:'unknown',name:'Unknown',emoji:'🌑',preview:'Kita perlu bicara.',messages:[
-    {from:'them',text:'Kita perlu bicara.',time:'23:06'}]}
+  {
+    id: 'raras', name: 'Raras', muse: 'Karina · aespa',
+    number: '0812-0000-0101', emoji: '🌷',
+    preview: 'lu pada di mana?',
+    messages: [
+      {from:'them', text:'WOI KOMPlotan', time:'09:12'},
+      {from:'me', text:'kenapa lagi anjir', time:'09:13'},
+      {from:'them', text:'lu pada di mana?', time:'09:14'}
+    ]
+  },
+  {
+    id: 'arya', name: 'Arya', muse: 'Ryul · LNGSHOT',
+    number: '0812-0000-0102', emoji: '🧢',
+    preview: 'wkwkwk anjir',
+    messages: [
+      {from:'them', text:'rak lu udah bangun?', time:'08:15'},
+      {from:'me', text:'udah, napa', time:'08:17'},
+      {from:'them', text:'wkwkwk anjir', time:'08:18'}
+    ]
+  },
+  {
+    id: 'anindya', name: 'Anindya', muse: 'Anna · MEOVV',
+    number: '0812-0000-0104', emoji: '🦋',
+    preview: 'nanti jangan telat ya',
+    messages: [
+      {from:'them', text:'guys nanti jangan telat ya', time:'10:02'},
+      {from:'me', text:'siap bu ketua', time:'10:03'}
+    ]
+  },
+  {
+    id: 'diajeng', name: 'Diajeng', muse: 'Carmen · Hearts2Hearts',
+    number: '0812-0000-0103', emoji: '🌼',
+    preview: 'HAHAHA GILA',
+    messages: [
+      {from:'them', text:'HAHAHA GILA', time:'10:20'},
+      {from:'me', text:'ketawa lu kenceng bgt', time:'10:21'}
+    ]
+  },
+  {
+    id: 'sekar', name: 'Sekar', muse: 'Ella · MEOVV',
+    number: '0812-0000-0105', emoji: '🌸',
+    preview: 'kirim fotonya dong',
+    messages: [
+      {from:'them', text:'rak kirim fotonya dong', time:'11:01'}
+    ]
+  },
+  {
+    id: 'rangga', name: 'Rangga', muse: 'Ohyul · LNGSHOT',
+    number: '0812-0000-0106', emoji: '🕶️',
+    preview: 'otw bentar',
+    messages: [
+      {from:'them', text:'otw bentar', time:'11:15'}
+    ]
+  },
+  {
+    id: 'rakha', name: 'Rakha', muse: 'Sakuya · NCT WISH',
+    number: '0812-0000-0107', emoji: '🐰',
+    preview: 'ada makanan ga',
+    messages: [
+      {from:'them', text:'ada makanan ga di rumah lu', time:'11:22'}
+    ]
+  },
+  {
+    id: 'komplotan8', name: 'Komplotan 8',
+    emoji: '👥', isGroup: true,
+    members: ['Raka','Raras','Arya','Anindya','Diajeng','Sekar','Rangga','Rakha'],
+    preview: 'grup dibuat',
+    messages: [
+      {from:'system', text:'Grup Komplotan 8 dibuat.', time:'09:00'},
+      {from:'them', name:'Raras', text:'selamat datang di grup paling waras', time:'09:01'},
+      {from:'them', name:'Arya', text:'bohong banget', time:'09:02'},
+      {from:'them', name:'Diajeng', text:'WKWKWKWK', time:'09:02'}
+    ]
+  },
+  {
+    id:'mama', name:'Mama', emoji:'🌻',
+    number:'0812-0000-0001', preview:'Pulang jam berapa?',
+    messages:[
+      {from:'them',text:'Raka, pulang jam berapa?',time:'07:40'},
+      {from:'me',text:'Nanti sore, Ma',time:'07:42'}
+    ]
+  }
 ];
+
+const WA_STORAGE = 'rakaWhatsAppData';
+try {
+  const saved = JSON.parse(localStorage.getItem(WA_STORAGE));
+  if (saved && Array.isArray(saved.contacts)) {
+    saved.contacts.forEach(old => {
+      const i = contacts.findIndex(c => c.id === old.id);
+      if (i !== -1) contacts[i] = old;
+      else contacts.push(old);
+    });
+  }
+} catch (e) {}
+
+function saveWhatsApp() {
+  localStorage.setItem(WA_STORAGE, JSON.stringify({contacts}));
+}
+
+let currentContact = null;
+let activeScreen = 'lock';
+let notesTimer;
+
 let currentContact = null;
 let activeScreen = 'lock';
 let notesTimer;
@@ -374,36 +465,175 @@ function openApp(name) {
 function shell(title,body,right='') {
   $('appContent').innerHTML=`<div class="app-header"><button class="back" onclick="goHome()">‹ Home</button><h2>${title}</h2><span>${right}</span></div><div class="app-body">${body}</div>`;
 }
+
 function renderChats() {
-  const rows=contacts.map(c=>`<button class="list-item" onclick="openChat('${c.id}')"><span class="avatar">${c.emoji}</span><span class="item-copy"><strong>${c.name}</strong><small>${escapeHTML(c.preview)}</small></span><small>${c.messages.at(-1)?.time||''}</small></button>`).join('');
-  shell('Chats',`<input id="contactSearch" placeholder="Search" style="width:100%;padding:10px;border:0;border-radius:10px;background:#e5e5ea" oninput="filterChats(this.value)"><div id="contactRows">${rows}</div><button onclick="addContact()" style="margin-top:15px;border:0;background:var(--accent);color:white;border-radius:10px;padding:10px 14px">＋ New chat</button>`,'Edit');
+  const rows = contacts
+    .slice()
+    .sort((a,b) => {
+      const ta = a.messages.at(-1)?.time || '';
+      const tb = b.messages.at(-1)?.time || '';
+      return tb.localeCompare(ta);
+    })
+    .map(c => `
+      <button class="list-item" onclick="openChat('${c.id}')">
+        <span class="avatar">${c.emoji || '👤'}</span>
+        <span class="item-copy">
+          <strong>${escapeHTML(c.name)}</strong>
+          <small>${escapeHTML(c.preview || 'Belum ada pesan')}</small>
+        </span>
+        <small>${c.messages.at(-1)?.time || ''}</small>
+      </button>
+    `).join('');
+
+  shell('WhatsApp', `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <strong style="font-size:25px">Chats</strong>
+      <button onclick="addContact()" style="border:0;background:none;color:#128c7e;font-size:22px">＋</button>
+    </div>
+    <input id="contactSearch" placeholder="Search"
+      style="width:100%;padding:10px;border:0;border-radius:10px;background:#e5e5ea"
+      oninput="filterChats(this.value)">
+    <div id="contactRows">${rows}</div>
+    <button onclick="openChat('komplotan8')"
+      style="width:100%;margin-top:14px;padding:12px;border:0;border-radius:12px;background:#128c7e;color:white">
+      👥 Buka grup Komplotan 8
+    </button>
+  `);
 }
+
 function filterChats(value) {
-  $('contactRows').innerHTML=contacts.filter(c=>c.name.toLowerCase().includes(value.toLowerCase())).map(c=>`<button class="list-item" onclick="openChat('${c.id}')"><span class="avatar">${c.emoji}</span><span class="item-copy"><strong>${c.name}</strong><small>${escapeHTML(c.preview)}</small></span></button>`).join('');
+  const query = value.toLowerCase();
+  $('contactRows').innerHTML = contacts
+    .filter(c => c.name.toLowerCase().includes(query))
+    .map(c => `
+      <button class="list-item" onclick="openChat('${c.id}')">
+        <span class="avatar">${c.emoji || '👤'}</span>
+        <span class="item-copy">
+          <strong>${escapeHTML(c.name)}</strong>
+          <small>${escapeHTML(c.preview || 'Belum ada pesan')}</small>
+        </span>
+      </button>
+    `).join('');
 }
+
 function openChat(id) {
-  currentContact=contacts.find(c=>c.id===id);
-  if(!currentContact) return;
-  const rows=currentContact.messages.map(m=>`<div class="bubble ${m.from==='me'?'me':'them'}">${escapeHTML(m.text)}<small>${m.time}${m.from==='me'?' ✓✓':''}</small></div>`).join('');
-  $('appContent').innerHTML=`<div class="chat-view active"><div class="chat-top"><button onclick="renderChats()">‹</button><span class="avatar">${currentContact.emoji}</span><div style="flex:1"><strong>${currentContact.name}</strong><div style="font-size:11px;color:#888">last seen recently</div></div><button onclick="toast('Call demo')">☎</button><button onclick="toast('Video call demo')">▣</button></div><div class="chat-messages" id="chatMessages"><div class="day-label">TODAY</div>${rows}</div><form class="chat-compose" onsubmit="sendMessage(event)"><button type="button" onclick="toast('Attachment demo')">＋</button><textarea id="messageInput" rows="1" placeholder="Message" required></textarea><button class="send" type="submit">↑</button></form></div>`;
-  const box=$('chatMessages'); box.scrollTop=box.scrollHeight;
+  currentContact = contacts.find(c => c.id === id);
+  if (!currentContact) return;
+
+  const c = currentContact;
+  const isGroup = c.isGroup;
+
+  const rows = c.messages.map(m => {
+    if (m.from === 'system') {
+      return `<div class="day-label">${escapeHTML(m.text)}</div>`;
+    }
+
+    return `
+      <div class="bubble ${m.from === 'me' ? 'me' : 'them'}">
+        ${isGroup && m.from !== 'me' && m.name
+          ? `<strong style="font-size:11px;color:#128c7e">${escapeHTML(m.name)}</strong><br>`
+          : ''}
+        ${escapeHTML(m.text)}
+        <small>${m.time}${m.from === 'me' ? ' ✓✓' : ''}</small>
+      </div>
+    `;
+  }).join('');
+
+  $('appContent').innerHTML = `
+    <div class="chat-view active">
+      <div class="chat-top">
+        <button onclick="renderChats()">‹</button>
+        <span class="avatar">${c.emoji || '👤'}</span>
+        <div style="flex:1;min-width:0">
+          <strong>${escapeHTML(c.name)}</strong>
+          <div style="font-size:11px;color:#888">
+            ${isGroup
+              ? `${c.members.length} participants`
+              : escapeHTML(c.number || 'Personal chat')}
+          </div>
+        </div>
+        <button onclick="showChatDetails()">ⓘ</button>
+      </div>
+
+      <div class="chat-messages" id="chatMessages">
+        <div class="day-label">TODAY</div>
+        ${rows}
+      </div>
+
+      <form class="chat-compose" onsubmit="sendMessage(event)">
+        <button type="button" onclick="toast('Attachment demo')">＋</button>
+        <textarea id="messageInput" rows="1" placeholder="Message" required></textarea>
+        <button class="send" type="submit">↑</button>
+      </form>
+    </div>
+  `;
+
+  const box = $('chatMessages');
+  box.scrollTop = box.scrollHeight;
 }
-function sendMessage(e) {
-  e.preventDefault();
-  const input=$('messageInput'), text=input.value.trim();
-  if(!text||!currentContact)return;
-  const c=currentContact, time=timeNow();
-  c.messages.push({from:'me',text,time}); c.preview=text;
+
+function sendMessage(event) {
+  event.preventDefault();
+
+  const input = $('messageInput');
+  const message = input.value.trim();
+
+  if (!message || !currentContact) return;
+
+  const c = currentContact;
+  const time = timeNow();
+
+  c.messages.push({
+    from: 'me',
+    text: message,
+    time
+  });
+
+  c.preview = message;
+  saveWhatsApp();
+
   openChat(c.id);
-  $('chatMessages').scrollTop=$('chatMessages').scrollHeight;
-  $('lockNotice').innerHTML=`<strong>${c.name}</strong><br>${escapeHTML(text)}<small style="display:block;margin-top:6px;opacity:.8">now</small>`;
+
+  $('chatMessages').scrollTop = $('chatMessages').scrollHeight;
+
+  $('lockNotice').innerHTML = `
+    <strong>${escapeHTML(c.name)}</strong><br>
+    ${escapeHTML(message)}
+    <small style="display:block;margin-top:6px;opacity:.8">now</small>
+  `;
 }
+
 function addContact() {
-  const name=prompt('Nama kontak baru?');
-  if(!name||!name.trim())return;
-  const c={id:'c'+Date.now(),name:name.trim(),emoji:'👤',preview:'New chat',messages:[]};
-  contacts.push(c); renderChats(); openChat(c.id);
+  const name = prompt('Nama kontak baru?');
+  if (!name || !name.trim()) return;
+
+  const cleanName = name.trim();
+
+  const contact = {
+    id: 'contact' + Date.now(),
+    name: cleanName,
+    number: '',
+    emoji: '👤',
+    preview: 'New chat',
+    messages: []
+  };
+
+  contacts.push(contact);
+  saveWhatsApp();
+  openChat(contact.id);
 }
+
+function showChatDetails() {
+  if (!currentContact) return;
+
+  const c = currentContact;
+  const details = c.isGroup
+    ? `Anggota: ${c.members.join(', ')}`
+    : `Nama: ${c.name}\nNomor: ${c.number || 'Belum diisi'}\nMuse: ${c.muse || '-'}`;
+
+  alert(details);
+}
+
 function escapeHTML(s) {
   return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
