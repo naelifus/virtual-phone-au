@@ -434,11 +434,14 @@ function toast(message) {
 function unlock() {
   $('lock').classList.remove('active');
   $('home').classList.add('active');
-  $('homeIndicator').style.display='block';
-  activeScreen='home';
+  $('homeIndicator').style.display = 'block';
+  activeScreen = 'home';
 }
-$('lock').addEventListener('click', e=>{
-  if(e.target.closest('button')) return;
+
+window.unlock = unlock;
+
+$('lock').addEventListener('click', e => {
+  if (e.target.closest('button')) return;
   unlock();
 });
 function goHome() {
