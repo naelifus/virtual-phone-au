@@ -111,19 +111,44 @@ button { cursor:pointer; }
   margin-top:24px; display:grid;
   grid-template-columns:repeat(4,1fr); gap:22px 9px;
 }
+
 .app-icon {
-  border:0; background:transparent; color:white;
-  text-align:center; min-width:0; padding:0;
+  border: 0;
+  background: transparent;
+  color: white;
+  text-align: center;
+  min-width: 0;
+  padding: 0;
 }
+
 .app-icon .emoji {
-  display:flex; align-items:center; justify-content:center;
-  margin:0 auto 5px; width:55px; height:55px;
-  border-radius:14px; font-size:29px;
-  background:#ffffff30; box-shadow:0 4px 9px #0002;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 5px;
+  width: 55px;
+  height: 55px;
+  border-radius: 17px;
+  font-size: 29px;
+  background: linear-gradient(
+    145deg,
+    #ffffff55,
+    #ffffff18 48%,
+    #00000018
+  );
+  border: 1px solid #ffffff45;
+  box-shadow:
+    0 5px 12px #0003,
+    inset 0 1px 2px #ffffff55;
+  overflow: hidden;
 }
+
 .app-icon small {
-  display:block; font-size:11px; text-shadow:0 1px 3px #0008;
+  display: block;
+  font-size: 11px;
+  text-shadow: 0 1px 3px #0008;
 }
+
 .dock {
   position:absolute; bottom:26px; left:13px; right:13px;
   height:83px; border-radius:26px; background:#ffffff38;
