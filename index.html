@@ -24,6 +24,7 @@ body {
 button,input,textarea { font:inherit; }
 button { cursor:pointer; }
 
+
 .phone {
   width: 280px;
   height: 606px;
@@ -40,23 +41,12 @@ button { cursor:pointer; }
   box-shadow: 0 20px 70px #0009;
 }
 
+
 @media (min-width: 500px) {
-  body {
-    padding: 16px;
-    min-height: 100vh;
-    min-height: 100dvh;
+  .phone {
+    zoom: 0.72;
   }
 }
-
-.phone {
-  width: min(280px, calc((100dvh - 32px) * 390 / 844));
-  height: min(606px, calc(100dvh - 32px));
-  max-width: 100%;
-  border: 5px solid #28282c;
-  border-radius: 36px;
-  box-shadow: 0 20px 70px #0009;
-}
-
 
 @media (max-width: 499px) {
   body {
