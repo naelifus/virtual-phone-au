@@ -27,8 +27,8 @@ button { cursor:pointer; }
 
 
 .phone {
-  width: 280px;
-  height: 606px;
+  width: 300px;
+  height: 650px;
   aspect-ratio: 390 / 844;
   min-height: 0;
   max-width: 100%;
@@ -37,10 +37,8 @@ button { cursor:pointer; }
   background: var(--wallpaper);
   color: white;
   flex-shrink: 0;
-
   border: 5px solid #292a2e;
-  border-radius: 38px;
-
+  border-radius: 40px;
   box-shadow:
     0 0 0 1px #777980,
     0 0 0 3px #151619,
@@ -131,16 +129,8 @@ button { cursor:pointer; }
   grid-template-columns:repeat(4,1fr); gap:22px 9px;
 }
 
-.app-icon {
-  border: 0;
-  background: transparent;
-  color: white;
-  text-align: center;
-  min-width: 0;
-  padding: 0;
-}
 
-
+/* iOS-style app icons */
 .app-icon {
   border: 0;
   background: transparent;
@@ -149,52 +139,75 @@ button { cursor:pointer; }
   min-width: 0;
   padding: 0;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.app-icon:active {
+  transform: scale(.94);
 }
 
 .app-icon .emoji {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  width: 52px;
+  height: 52px;
   margin: 0 auto 5px;
-  width: 55px;
-  height: 55px;
-  border-radius: 16px;
+  border-radius: 13px;
   font-size: 27px;
   background-image: linear-gradient(
     145deg,
-    #ffffff45,
-    #ffffff08 55%,
-    #00000020
+    #ffffff35,
+    #ffffff08 48%,
+    #00000022
   );
-  border: 1px solid #ffffff35;
+  border: 1px solid #ffffff24;
   box-shadow:
-    0 4px 10px #0003,
-    inset 0 1px 1px #ffffff55;
+    0 2px 5px #0003,
+    inset 0 1px 1px #ffffff40;
   overflow: hidden;
+}
+
+.app-icon .emoji img {
+  width: 35px;
+  height: 35px;
+  object-fit: contain;
 }
 
 .app-icon small {
   display: block;
-  font-size: 11px;
-  text-shadow: 0 1px 3px #0008;
+  font-size: 10px;
+  line-height: 14px;
+  color: #fff;
+  text-shadow: 0 1px 3px #0009;
+  white-space: nowrap;
 }
 
 .dock {
-  background: #ffffff20;
-  border: 1px solid #ffffff25;
+  position: absolute;
+  bottom: 25px;
+  left: 12px;
+  right: 12px;
+  height: 75px;
+  padding: 8px 5px;
+  border: 1px solid #ffffff32;
   border-radius: 25px;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  padding: 9px;
+  background: #ffffff30;
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  backdrop-filter: blur(28px) saturate(180%);
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
 }
 
-.dock {
-  position:absolute; bottom:26px; left:13px; right:13px;
-  height:83px; border-radius:26px; background:#ffffff38;
-  backdrop-filter:blur(24px); display:flex;
-  align-items:center; justify-content:space-evenly;
+.dock .emoji {
+  width: 49px;
+  height: 49px;
+  margin-bottom: 0;
+  border-radius: 12px;
 }
-.dock .emoji { width:53px; height:53px; border-radius:14px; }
+
 .app-screen { background:var(--panel); color:var(--text); }
 .app-header {
   min-height:53px; padding:9px 15px; display:flex;
@@ -301,8 +314,11 @@ button { cursor:pointer; }
   <div class="status">
     <span id="statusTime">9:41</span>
     <div class="island"></div>
-    <div class="status-right"><span>▮▮▮</span><span>Wi-Fi</span><span>▰</span></div>
-  </div>
+    <div class="status-right">
+  <span>▮▮▮</span>
+  <span>⌁</span>
+  <span>▰</span>
+</div>
 
   <div id="lock" class="screen active">
     <div class="lock-date" id="lockDate">Friday, October 23</div>
